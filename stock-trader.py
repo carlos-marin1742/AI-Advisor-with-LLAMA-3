@@ -242,7 +242,7 @@ def get_natural_language_insights(
     price_change, volume_change, dow_rolling_avg, market_open_duration, dow_price_change, dow_volume_change, daily_high, daily_low, buying_momentum, selling_momentum, timestamp
     ):
 
-        prompt = f"""
+    prompt = f"""
     You are a professional stock broker. Apple's stock has a 5-minute rolling average of {rolling_avg:.2f}.
     The Exponential Moving Average (EMA) is {ema:.2f}, and the Relative Strength Index (RSI) is {rsi:.2f}.
     The Bollinger Bands are set with an upper band of {bollinger_upper:.2f} and a lower band of {bollinger_lower:.2f}.
@@ -256,8 +256,9 @@ def get_natural_language_insights(
     The insights should not be longer than 100 words and should not have an introduction.
     """
 response = ollama.chat(
-            model="llama3.1",            
-            messages=[{"role": "user", "content": prompt}] # type: ignore
+            model="llama3.1"           
+            messages=[{"role": "user",
+                        "content": "prompt"}] # type: ignore
         )
 response_text = response['message']['content'].strip()
 message = st.chat_message("assistant")
