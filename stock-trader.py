@@ -241,8 +241,25 @@ def get_natural_language_insights(
     rolling_avg, ema, rsi, bollinger_upper, bollinger_lower,
     price_change, volume_change, dow_rolling_avg, market_open_duration, dow_price_change, dow_volume_change, daily_high, daily_low, buying_momentum, selling_momentum, timestamp
     ):
+        
+    # prompt = f"""
+    # You are a professional stock broker. Apple's stock has a 5-minute rolling average of {rolling_avg:.2f}.
+    # The Exponential Moving Average (EMA) is {ema:.2f}, and the Relative Strength Index (RSI) is {rsi:.2f}.
+    # The Bollinger Bands are set with an upper band of {bollinger_upper:.2f} and a lower band of {bollinger_lower:.2f}.
+    # The price has changed by {price_change:.2f}, and the volume has shifted by {volume_change}.
+    # The DOW price has changed by {dow_price_change:.2f}, and the volume has shifted by {dow_volume_change}.
+    # Meanwhile, the Dow Jones index has a 5-minute rolling average of {dow_rolling_avg:.2f}.
+    # The market has been open for {market_open_duration:.2f} minutes.
+    # Today's high was {daily_high:.2f} and low was {daily_low:.2f}.
+    # The buying momentum is {buying_momentum:.2f} and selling momentum is {selling_momentum:.2f}.
+    # Based on this data, provide insights into the current stock trend and the general market sentiment.
+    # he insights should not be longer than 100 words and should not have an introduction.
+    # """
 
-    prompt = f"""
+    response = ollama.chat(
+            model="llama3.1",           
+            messages=[{"role": "user",
+                        "content": f"""
     You are a professional stock broker. Apple's stock has a 5-minute rolling average of {rolling_avg:.2f}.
     The Exponential Moving Average (EMA) is {ema:.2f}, and the Relative Strength Index (RSI) is {rsi:.2f}.
     The Bollinger Bands are set with an upper band of {bollinger_upper:.2f} and a lower band of {bollinger_lower:.2f}.
@@ -254,12 +271,9 @@ def get_natural_language_insights(
     The buying momentum is {buying_momentum:.2f} and selling momentum is {selling_momentum:.2f}.
     Based on this data, provide insights into the current stock trend and the general market sentiment.
     The insights should not be longer than 100 words and should not have an introduction.
-    """
-response = ollama.chat(
-            model="llama3.1"           
-            messages=[{"role": "user",
-                        "content": "prompt"}] # type: ignore
-        )
+    """}]) # type: ignore
+
+
 response_text = response['message']['content'].strip()
 message = st.chat_message("assistant")
 message.write(timestamp) # type: ignore
